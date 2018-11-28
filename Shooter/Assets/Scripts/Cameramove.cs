@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Cameramove : MonoBehaviour {
     Vector2 mouse;
@@ -11,6 +12,12 @@ public class Cameramove : MonoBehaviour {
     public GameObject Gun;
     bool play = true;
     GameObject character;
+
+    public float Decaybullet = 0.5f;
+    public Text bulletsnum;
+    public Text Maxbullets;
+
+    int escapedown = 0;
 
     public GameObject PauseHud;
 
@@ -29,29 +36,40 @@ public class Cameramove : MonoBehaviour {
     }
 	void disparo()
     {
-     
+        if (int.Parse(bulletsnum.text) > 0) { 
         RaycastHit raybullet;
-        if (Physics.Raycast(thisCamera.ScreenPointToRay(new Vector3(Screen.width / 2 ,Screen.height / 2,0)), out raybullet, Mathf.Infinity))
-        {
-            gameObject.transform.GetChild(0).gameObject.SetActive(true);
-           
-          lr.SetPosition(0, Gun.transform.position);
-         lr.SetPosition(1, raybullet.point);
+            if (Physics.Raycast(thisCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)), out raybullet, Mathf.Infinity))
+            {
+                gameObject.transform.GetChild(0).gameObject.SetActive(true);
 
-           Instantiate(Partic, raybullet.point, transform.rotation);
-            
-           
-          //    raybullet.collider.GetComponent<Idamage>().UpdateHealth(daño);
+                lr.SetPosition(0, Gun.transform.position);
+                lr.SetPosition(1, raybullet.point);
 
+                Instantiate(Partic, raybullet.point, transform.rotation);
 
+                bulletsnum.text = ((int)(float.Parse(bulletsnum.text) - Decaybullet)).ToString();
+
+                //    raybullet.collider.GetComponent<Idamage>().UpdateHealth(daño);
+
+            }
         }
     }
+
 	// Update is called once per frame
 	void Update () {
-   
+        
+        if (Input.GetAxis("Cancel")>0 && escapedown == 0)
 
-        if (Input.GetKeyDown(KeyCode.Escape))
         {
+
+            escapedown = 1;
+         
+
+        }
+        else if (Input.GetAxis("Cancel") == 0 && escapedown == 1)
+
+            {
+            escapedown = 0;
             if (play)
             {
                 play = false;
@@ -63,10 +81,12 @@ public class Cameramove : MonoBehaviour {
                 play = true;
                 PauseHud.SetActive(false);
             }
+
         }
+        
         if (play)
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetAxis("Run")>0)
             {
                 speed = 8;
             }
@@ -76,7 +96,7 @@ public class Cameramove : MonoBehaviour {
             }
             
 
-            if (Input.GetMouseButton(0))
+            if (Input.GetAxis("Fire1")>0)
             {
                 disparo();
             }
