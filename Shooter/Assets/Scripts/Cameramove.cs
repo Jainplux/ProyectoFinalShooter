@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 
 public class Cameramove : MonoBehaviour {
     Vector2 mouse;
@@ -10,6 +12,7 @@ public class Cameramove : MonoBehaviour {
     public float sensivity = 5;
     public float smoothing = 2;
     public GameObject Gun;
+    public bool recarga=false;
     bool play = true;
     GameObject character;
 
@@ -18,6 +21,7 @@ public class Cameramove : MonoBehaviour {
     public Text Maxbullets;
 
     int escapedown = 0;
+    int escapedown1 = 0;
 
     public GameObject PauseHud;
 
@@ -36,25 +40,41 @@ public class Cameramove : MonoBehaviour {
     }
 	void disparo()
     {
-        if (int.Parse(bulletsnum.text) > 0) { 
+       if (int.Parse(bulletsnum.text) > 0) {
+          
         RaycastHit raybullet;
-            if (Physics.Raycast(thisCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)), out raybullet, Mathf.Infinity))
-            {
-                gameObject.transform.GetChild(0).gameObject.SetActive(true);
+                if (Physics.Raycast(thisCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)), out raybullet, Mathf.Infinity))
+                {
+                    gameObject.transform.GetChild(0).gameObject.SetActive(true);
 
-                lr.SetPosition(0, Gun.transform.position);
-                lr.SetPosition(1, raybullet.point);
+                    lr.SetPosition(0, Gun.transform.position);
+                    lr.SetPosition(1, raybullet.point);
 
-                Instantiate(Partic, raybullet.point, transform.rotation);
+                    Instantiate(Partic, raybullet.point, transform.rotation);
 
-                bulletsnum.text = ((int)(float.Parse(bulletsnum.text) - Decaybullet)).ToString();
+                    bulletsnum.text = ((int)(float.Parse(bulletsnum.text) - Decaybullet)).ToString();
 
-                //    raybullet.collider.GetComponent<Idamage>().UpdateHealth(daño);
+                    //    raybullet.collider.GetComponent<Idamage>().UpdateHealth(daño);
 
-            }
+                }
         }
+        else
+        {
+            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        }
+
     }
 
+    IEnumerator recargar()
+    {
+        escapedown1 = 0;
+        Gun.GetComponent<PlayableDirector>().Play();
+        recarga = true;
+        bulletsnum.text = Maxbullets.text;
+
+        yield return new WaitForSeconds(2.0f);
+        recarga = false;
+    }
 	// Update is called once per frame
 	void Update () {
         
@@ -83,9 +103,31 @@ public class Cameramove : MonoBehaviour {
             }
 
         }
-        
+
+
+       
+
         if (play)
         {
+            if (Input.GetAxis("Fire3") > 0 && escapedown1 == 0)
+
+            {
+
+                escapedown1 = 1;
+
+            }
+            else if (Input.GetAxis("Fire3") == 0 && escapedown1 == 1)
+
+            {
+                if (!recarga)
+                {
+                    StartCoroutine(recargar());
+                }
+
+            }
+
+
+
             if (Input.GetAxis("Run")>0)
             {
                 speed = 8;
@@ -98,7 +140,14 @@ public class Cameramove : MonoBehaviour {
 
             if (Input.GetAxis("Fire1")>0)
             {
-                disparo();
+                if (!recarga)
+                {
+                    disparo();
+                }
+                else
+                {
+                    gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                }
             }
             else
             {
