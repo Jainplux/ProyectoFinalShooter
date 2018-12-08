@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class detectarjug : MonoBehaviour
+public abstract class detectarjug : MonoBehaviour
 {
-    public Transform player;
+    public  Transform player;
     UnityEngine.AI.NavMeshAgent enemy;
-    private bool range = false;
-    public Transform[] waypoints;
-    Vector3 targetP;
-    public float limitR;
+    public bool range = false;
+    public  Transform[] waypoints;
+     public  Vector3 targetP;
+    public   float limitR;
     public float speed = 3;
-    private float health;
-    private float damage;
+    private   float health;
+    private  float damage;
 
 
     // Use this for initialization
 
-    void Start()
+    public virtual void Start()
     {
         targetP = waypoints[0].position;
         enemy = GetComponent<UnityEngine.AI.NavMeshAgent>();
@@ -25,18 +25,18 @@ public class detectarjug : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void move()
+   public virtual void move()
     {
         transform.position = Vector3.MoveTowards(transform.position, targetP, Time.deltaTime * speed);
 
         
     }
-    void changet()
+   public virtual void changet()
     {
         int randomI = Random.Range(0, waypoints.Length);
         targetP = waypoints[randomI].position;
     }
-    private void OnTriggerEnter(Collider other)
+    private  void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
         {
@@ -50,7 +50,7 @@ public class detectarjug : MonoBehaviour
             range = false;
         }
     }
-    void Update()
+   public virtual void Update()
     {
         if (Vector3.Distance(transform.position, targetP) < limitR)
         {
@@ -58,11 +58,11 @@ public class detectarjug : MonoBehaviour
         }
         move();
         
-        if (!range)
+        if (range)
         {
             enemy.destination = player.position;
         }
-        if (range)
+        if (!range)
         {
             enemy.destination = this.transform.position;
         }
