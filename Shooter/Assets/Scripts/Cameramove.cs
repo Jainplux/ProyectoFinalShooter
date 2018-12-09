@@ -15,11 +15,12 @@ public class Cameramove : MonoBehaviour {
     public bool recarga=false;
     bool play = true;
     GameObject character;
+    public GameObject enemy;
 
     public float Decaybullet = 0.5f;
     public Text bulletsnum;
     public Text Maxbullets;
-
+    public Slider vida;
     int escapedown = 0;
     int escapedown1 = 0;
 
@@ -32,7 +33,7 @@ public class Cameramove : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-
+        vida.value = 100000000;
         thisCamera = GetComponent<Camera>();
         character = this.transform.parent.gameObject;
         lr = gameObject.transform.GetChild(0).gameObject.GetComponent<LineRenderer>();
@@ -53,6 +54,18 @@ public class Cameramove : MonoBehaviour {
                     Instantiate(Partic, raybullet.point, transform.rotation);
 
                     bulletsnum.text = ((int)(float.Parse(bulletsnum.text) - Decaybullet)).ToString();
+                //pregunto si el objeto con el que coliciona es enemigo le baje vida 
+                if (raybullet.collider.gameObject == enemy)
+                {
+                    if (vida.value > 0)
+                    {
+                        vida.value = vida.value - 0.1f;
+                    }
+                    else
+                    {
+                        enemy.SetActive(false);
+                    }
+                }
 
                     //    raybullet.collider.GetComponent<Idamage>().UpdateHealth(daño);
 
