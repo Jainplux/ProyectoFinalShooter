@@ -52,19 +52,19 @@ public class detectarjug : MonoBehaviour
     }
     void Update()
     {
-        if (Vector3.Distance(transform.position, targetP) < limitR)
-        {
-            changet();
-        }
+     //   if (Vector3.Distance(transform.position, targetP) < limitR)
+      //  {
+           
+        //}
         move();
         
-        if (!range)
+        if (range)
         {
             enemy.destination = player.position;
         }
-        if (range)
+        if (!range)
         {
-            enemy.destination = this.transform.position;
+            changet();
         }
     }
 }
