@@ -511,6 +511,21 @@ Prefab:
       propertyPath: waypoints.Array.data[2]
       value: 
       objectReference: {fileID: 1441481880}
+    - target: {fileID: 195583076693890144, guid: ed3915560b8b37f4d8519159583c9fe4,
+        type: 2}
+      propertyPath: m_Speed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 195583076693890144, guid: ed3915560b8b37f4d8519159583c9fe4,
+        type: 2}
+      propertyPath: m_Acceleration
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 195583076693890144, guid: ed3915560b8b37f4d8519159583c9fe4,
+        type: 2}
+      propertyPath: m_AngularSpeed
+      value: 120
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114607910636241472, guid: ed3915560b8b37f4d8519159583c9fe4, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: ed3915560b8b37f4d8519159583c9fe4, type: 2}
@@ -1289,7 +1304,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &318616328
 Transform:
@@ -1746,7 +1761,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &395351477
 Transform:
@@ -2341,7 +2356,7 @@ MonoBehaviour:
   - {fileID: 1943875759}
   targetP: {x: 0, y: 0, z: 0}
   limitR: 0
-  speed: 3
+  speed: 0.05
   visionRadius2: 15
   visionRadius1: 10
   bala: {fileID: 268648883}
@@ -3127,7 +3142,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &715054127
 Transform:
@@ -3333,18 +3348,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 787959545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76292fc135820fd4aacf18d32c2cc008, type: 3}
+  m_Script: {fileID: 11500000, guid: f76f2b94babac63469a9bbf9e07f7d09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 305524238}
-  range: 0
+  range: 1
   waypoints:
   - {fileID: 1943875759}
   - {fileID: 1535565016}
-  - {fileID: 507421122}
+  - {fileID: 1441481880}
   targetP: {x: 0, y: 0, z: 0}
   limitR: 0
-  speed: 3
+  speed: 0.005
 --- !u!1001 &836076581
 Prefab:
   m_ObjectHideFlags: 0
@@ -3354,7 +3369,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4395793006583830, guid: ed3915560b8b37f4d8519159583c9fe4, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 9.6
+      value: -11.4
       objectReference: {fileID: 0}
     - target: {fileID: 4395793006583830, guid: ed3915560b8b37f4d8519159583c9fe4, type: 2}
       propertyPath: m_LocalPosition.y
@@ -3362,7 +3377,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4395793006583830, guid: ed3915560b8b37f4d8519159583c9fe4, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 42.648315
+      value: 39.88
       objectReference: {fileID: 0}
     - target: {fileID: 4395793006583830, guid: ed3915560b8b37f4d8519159583c9fe4, type: 2}
       propertyPath: m_LocalRotation.x
@@ -4587,7 +4602,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1091702802
 Transform:
@@ -5044,7 +5059,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!64 &1212240767
 MeshCollider:
@@ -6195,7 +6210,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1441481879}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.4, y: -0, z: 47.1}
+  m_LocalPosition: {x: -13.2, y: -0, z: 59.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -6979,7 +6994,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1535565015}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.7, y: 0.1, z: 34.11}
+  m_LocalPosition: {x: -14.8, y: 0.1, z: 65.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -7722,7 +7737,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.8, y: 0}
+  m_AnchoredPosition: {x: 0.80000305, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1679435778
@@ -7857,7 +7872,10 @@ MonoBehaviour:
   smoothing: 2
   Gun: {fileID: 1655406929}
   recarga: 0
-  enemy: {fileID: 507421116}
+  enemy: {fileID: 1846792403}
+  enemo: {fileID: 787959545}
+  balinbalera: {fileID: 1292398856079574, guid: 4494dce700aeab343911194bd77b1ce4,
+    type: 2}
   Decaybullet: 0.5
   bulletsnum: {fileID: 1944582145}
   Maxbullets: {fileID: 431855523}
@@ -8363,7 +8381,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1943875758}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.3, y: -0, z: 40.3}
+  m_LocalPosition: {x: -19.2, y: -0, z: 63}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

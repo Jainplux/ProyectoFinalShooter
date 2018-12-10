@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class detectarjug : MonoBehaviour
+public class detectarjug : MonoBehaviour
 {
     public  Transform player;
     UnityEngine.AI.NavMeshAgent enemy;
@@ -10,10 +10,10 @@ public abstract class detectarjug : MonoBehaviour
     public  Transform[] waypoints;
      public  Vector3 targetP;
     public   float limitR;
-    public float speed = 3;
-    private   float health;
+    public float speed = 0.5f;
+    private   float health= 10.0f;
     private  float damage;
-
+   
 
     // Use this for initialization
 
@@ -42,6 +42,17 @@ public abstract class detectarjug : MonoBehaviour
         {
             range = true;
         }
+        else if (other.tag == "Particula")
+        {
+            if (health > 0)
+            {
+                health -= 1;
+            }
+            else
+           {
+                Destroy(gameObject);
+            }
+        }
     }
     private void OnTriggerExit(Collider other)
     {
@@ -56,7 +67,7 @@ public abstract class detectarjug : MonoBehaviour
       //  {
            
         //}
-        move();
+       move();
         
         if (range)
         {
@@ -64,7 +75,11 @@ public abstract class detectarjug : MonoBehaviour
         }
         if (!range)
         {
-            changet();
+
+            enemy.destination = this.transform.position;
         }
+       
+        
     }
 }
+S

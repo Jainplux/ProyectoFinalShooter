@@ -12,10 +12,12 @@ public class Cameramove : MonoBehaviour {
     public float sensivity = 5;
     public float smoothing = 2;
     public GameObject Gun;
-    public bool recarga=false;
+    public bool recarga = false;
     bool play = true;
     GameObject character;
     public GameObject enemy;
+    public GameObject enemo;
+    public GameObject balinbalera;
 
     public float Decaybullet = 0.5f;
     public Text bulletsnum;
@@ -33,7 +35,7 @@ public class Cameramove : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        vida.value = 100000000;
+        vida.value = 10000000000;
         thisCamera = GetComponent<Camera>();
         character = this.transform.parent.gameObject;
         lr = gameObject.transform.GetChild(0).gameObject.GetComponent<LineRenderer>();
@@ -55,15 +57,16 @@ public class Cameramove : MonoBehaviour {
 
                     bulletsnum.text = ((int)(float.Parse(bulletsnum.text) - Decaybullet)).ToString();
                 //pregunto si el objeto con el que coliciona es enemigo le baje vida 
-                if (raybullet.collider.gameObject == enemy)
+                if (raybullet.collider.gameObject == enemy || raybullet.collider.gameObject == enemo || raybullet.collider.gameObject == balinbalera)
                 {
                     if (vida.value > 0)
                     {
-                        vida.value = vida.value - 0.1f;
+                        vida.value = vida.value - 10.0f;
                     }
                     else
                     {
                         enemy.SetActive(false);
+                        Destroy(gameObject);
                     }
                 }
 
