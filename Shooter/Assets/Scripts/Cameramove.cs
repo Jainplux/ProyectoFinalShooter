@@ -4,96 +4,169 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
+using UnityEngine.AI;
 
-public class Cameramove : MonoBehaviour {
+public class Cameramove : MonoBehaviour, Idamage {
+    //GUN
+    protected int actualgun = 1;
+    [SerializeField]
+    protected GUNs gunsdb;
+    protected bool ischange = false;
+    public GameObject Gun;
+    public int gundamage;
+    public bool recarga = false;
+    public float Decaybullet = 0.5f;
+    public Text bulletsnum;
+    public Text Maxbullets;
+    protected LineRenderer lr;
+    protected GameObject Partic;
+
+    //Player
     Vector2 mouse;
     Vector2 smooth;
     public float speed = 2;
     public float sensivity = 5;
     public float smoothing = 2;
-    public GameObject Gun;
-    public bool recarga = false;
     bool play = true;
+    [SerializeField]
     GameObject character;
-    public GameObject enemy;
-    public GameObject enemo;
-    public GameObject balinbalera;
 
-    public float Decaybullet = 0.5f;
-    public Text bulletsnum;
-    public Text Maxbullets;
+    float lastpos;
+    float lastposy;
+    public float distanciadecol;
+
+    float velocity;
     public Slider vida;
     int escapedown = 0;
     int escapedown1 = 0;
+    int change = 0;
 
+    [SerializeField]
+    public int Maxhealth;
     public GameObject PauseHud;
 
-    protected LineRenderer lr;
-    [SerializeField]
-    protected GameObject Partic;
     Camera thisCamera;
 
-    // Use this for initialization
-    void Start () {
-        vida.value = 10000000000;
-        thisCamera = GetComponent<Camera>();
-        character = this.transform.parent.gameObject;
-        lr = gameObject.transform.GetChild(0).gameObject.GetComponent<LineRenderer>();
+
+    public int health
+    {
+        get; set;
+    }
+
+    public void UpdateHealth(int Damage)
+    {
+        health -= Damage;
+        if (health <= 0)
+        {
+            Destroy(this.transform.parent.gameObject);
+        }
+
+        vida.value = ((float)health / Maxhealth);
 
     }
-	void disparo()
+
+    protected void changegun()
     {
-       if (int.Parse(bulletsnum.text) > 0) {
-          
-        RaycastHit raybullet;
-                if (Physics.Raycast(thisCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)), out raybullet, Mathf.Infinity))
-                {
-                    gameObject.transform.GetChild(0).gameObject.SetActive(true);
 
-                    lr.SetPosition(0, Gun.transform.position);
-                    lr.SetPosition(1, raybullet.point);
+        Gun.GetComponent<MeshRenderer>().material = gunsdb.gun[actualgun].material;
+        gundamage = gunsdb.gun[actualgun].Damage;
+        Maxbullets.text = gunsdb.gun[actualgun].Maxammo.ToString();
+        lr = gameObject.transform.GetChild(actualgun).gameObject.GetComponent<LineRenderer>();
+        Partic = gunsdb.gun[actualgun].partic;
+        bulletsnum.text = gunsdb.gun[actualgun].actualammo.ToString();
 
-                    Instantiate(Partic, raybullet.point, transform.rotation);
+    }
 
-                    bulletsnum.text = ((int)(float.Parse(bulletsnum.text) - Decaybullet)).ToString();
+    // Use this for initialization
+    void Start()
+    {
+        
+        StartCoroutine(velo());
+        gunsdb.gun[actualgun].actualammo = gunsdb.gun[actualgun].Maxammo;
+        changegun();
+        character = gameObject.transform.parent.gameObject;
+        health = Maxhealth;
+
+        thisCamera = GetComponent<Camera>();
+
+
+    }
+    void disparo()
+    {
+        if (int.Parse(bulletsnum.text) > 0) {
+
+            RaycastHit raybullet;
+            if (Physics.Raycast(thisCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)), out raybullet, Mathf.Infinity))
+            {
+                gameObject.transform.GetChild(actualgun).gameObject.SetActive(true);
+
+                lr.SetPosition(0, Gun.transform.position);
+                lr.SetPosition(1, raybullet.point);
+
+                Instantiate(Partic, raybullet.point, transform.rotation);
+
+                bulletsnum.text = ((int)(float.Parse(bulletsnum.text) - Decaybullet)).ToString();
                 //pregunto si el objeto con el que coliciona es enemigo le baje vida 
-                if (raybullet.collider.gameObject == enemy || raybullet.collider.gameObject == enemo || raybullet.collider.gameObject == balinbalera)
+                try {
+                    raybullet.collider.gameObject.GetComponent<Idamage>().UpdateHealth(gundamage);
+                }
+                catch (System.Exception)
                 {
-                    if (vida.value > 0)
-                    {
-                        vida.value = vida.value - 10.0f;
-                    }
-                    else
-                    {
-                        enemy.SetActive(false);
-                        Destroy(gameObject);
-                    }
-                }
-
-                    //    raybullet.collider.GetComponent<Idamage>().UpdateHealth(daño);
 
                 }
+
+                //    raybullet.collider.GetComponent<Idamage>().UpdateHealth(daño);
+
+            }
         }
         else
         {
-            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            gameObject.transform.GetChild(actualgun).gameObject.SetActive(false);
         }
 
     }
 
     IEnumerator recargar()
     {
+
         escapedown1 = 0;
         Gun.GetComponent<PlayableDirector>().Play();
         recarga = true;
-        bulletsnum.text = Maxbullets.text;
+        if (ischange)
+        {
+            changegun();
+        }
+        else
+        {
+            bulletsnum.text = Maxbullets.text;
+        }
 
         yield return new WaitForSeconds(2.0f);
         recarga = false;
+        ischange = false;
+    }
+    IEnumerator velo()
+    {
+        while (true)
+        {
+            
+          
+            lastpos = transform.parent.transform.position.x;
+
+            lastposy = transform.parent.transform.position.z;
+            yield return new WaitForFixedUpdate();
+            float sp = (transform.parent.transform.position.x);
+            float sp2 = (transform.parent.transform.position.z);
+            velocity = ((Mathf.Abs(sp - lastpos)) + (Mathf.Abs(sp2 - lastposy)))/2;
+            distanciadecol = velocity * 20;
+        }
     }
 	// Update is called once per frame
 	void Update () {
+
+       
         
+
         if (Input.GetAxis("Cancel")>0 && escapedown == 0)
 
         {
@@ -125,6 +198,40 @@ public class Cameramove : MonoBehaviour {
 
         if (play)
         {
+
+            if (Input.GetAxis("Change") > 0 && change == 0)
+
+            {
+
+                change = 1;
+
+
+            }
+            else if (Input.GetAxis("Change") == 0 && change == 1)
+
+            {
+                change = 0;
+                if (!recarga)
+                {
+                    gunsdb.gun[actualgun].actualammo = int.Parse(bulletsnum.text);
+                    if (actualgun == 0)
+                    {
+                        actualgun = 1;
+                    }
+                    else
+                    {
+                        actualgun = 0;
+                    }
+                    ischange = true;
+                 
+                    StartCoroutine(recargar());
+                }
+                
+                
+
+
+            }
+
             if (Input.GetAxis("Fire3") > 0 && escapedown1 == 0)
 
             {
@@ -162,12 +269,12 @@ public class Cameramove : MonoBehaviour {
                 }
                 else
                 {
-                    gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                    gameObject.transform.GetChild(actualgun).gameObject.SetActive(false);
                 }
             }
             else
             {
-                gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                gameObject.transform.GetChild(actualgun).gameObject.SetActive(false);
             }
             float traff = Input.GetAxis("Horizontal") * speed;
             float trans = Input.GetAxis("Vertical") * speed;
@@ -175,7 +282,7 @@ public class Cameramove : MonoBehaviour {
             trans *= Time.deltaTime;
             traff *= Time.deltaTime;
 
-            character.transform.Translate(traff, 0, trans);
+           character.transform.Translate(traff, 0, trans);
 
 
             Vector2 md = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
@@ -187,5 +294,13 @@ public class Cameramove : MonoBehaviour {
             transform.localRotation = Quaternion.AngleAxis(-mouse.y, Vector3.right);
            character.transform.localRotation = Quaternion.AngleAxis(mouse.x, character.transform.up);
         }
+    }
+    void OnDrawGizmos()
+    {
+        //Distancia de colison
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, distanciadecol);
+        
+
     }
 }

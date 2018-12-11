@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
-public class detectarjug : MonoBehaviour, Idamage
-{
+public class Enemy : MonoBehaviour,Idamage {
+
+    public bool jugdetected = false;
     public float bulletinst;
     public bool isdisparando = false;
-    public float visionRadius1;
     public GameObject bala;
     public float distanciadedisp;
+    public float distanciadealeja;
     public Transform player;
     protected UnityEngine.AI.NavMeshAgent agent;
     [SerializeField]
@@ -18,13 +19,13 @@ public class detectarjug : MonoBehaviour, Idamage
     [SerializeField]
     protected int MaxHealth;
     [SerializeField]
-    protected  Transform[] waypoints;
+    protected Transform[] waypoints;
     protected int waypointscount = 0;
     [SerializeField]
     protected estadoenemy actualestado = new estadoenemy();
-   
+
     public int Damage;
- 
+
     public int health
     {
         get; set;
@@ -37,17 +38,17 @@ public class detectarjug : MonoBehaviour, Idamage
         {
             Destroy(this.gameObject);
         }
-        vida.value = (float) health / MaxHealth;
+        vida.value = (float)health / MaxHealth;
     }
 
 
     public enum estadoenemy
     {
-        idle,atacando,dectectojug
+        idle, atacando, dectectojug
 
     }
 
-   
+
 
     private void Awake()
     {
@@ -65,13 +66,13 @@ public class detectarjug : MonoBehaviour, Idamage
         if (agent.remainingDistance <= agent.stoppingDistance)
         {
             changewaypoint();
-        }   
+        }
     }
 
     protected void changewaypoint()
     {
         agent.destination = waypoints[waypointscount].position;
-        if ((waypointscount + 1)<waypoints.Length)
+        if ((waypointscount + 1) < waypoints.Length)
         {
             waypointscount++;
         }
@@ -84,19 +85,30 @@ public class detectarjug : MonoBehaviour, Idamage
 
     protected void atacar()
     {
-
         float dist = Vector3.Distance(player.position, transform.position);
-        if (dist < distanciadedisp && !isdisparando)
+
+      
+        if (dist < distanciadedisp)
         {
-            isdisparando = true;
-            StartCoroutine(disparando());
+
+            agent.destination = transform.position;
+
+            if (!isdisparando)
+            {
+                isdisparando = true;
+                StartCoroutine(disparando());
+            }
+        }
+        else
+        {
+            agent.destination = player.position;
         }
 
     }
 
-  protected IEnumerator disparando()
+    protected IEnumerator disparando()
     {
-       
+
         while (isdisparando)
         {
             GameObject bullet = Instantiate(bala, gameObject.transform.position, transform.rotation);
@@ -110,43 +122,63 @@ public class detectarjug : MonoBehaviour, Idamage
 
     protected void detectojugfuc()
     {
-
-       
         agent.destination = player.position;
-       
-    }
-   public virtual void Update()
-    {
 
+    }
+
+    protected void detector()
+    {
+        
+        float dis = Vector3.Distance(transform.position, player.position);
+        if (dis < (player.gameObject.GetComponentInChildren<Cameramove>().distanciadecol + distanciadealeja))
+        {
+            jugdetected = true;
+        }
+    }
+    public virtual void Update()
+    {
+        detector();
         switch (actualestado)
         {
-         
+
             case estadoenemy.idle:
-                move();
-                
+               move();
+
+         
                 break;
             case estadoenemy.dectectojug:
                 atacar();
                 transform.LookAt(player);
                 break;
         }
-        float dist = Vector3.Distance(player.position, transform.position);
-        // float dist2 = Vector3.Distance(player.position, transform.position);
-        //si la distancia de vision es menos al radio amariilo se acerca
-        if (dist < visionRadius1)
+        if (jugdetected && actualestado == estadoenemy.idle)
         {
             actualestado = estadoenemy.dectectojug;
             detectojugfuc();
 
         }
-        else
+        
+        float disttes = Vector3.Distance(player.position, transform.position);
+        if(disttes>distanciadealeja && actualestado == estadoenemy.dectectojug)
         {
+            jugdetected = false;
             isdisparando = false;
             actualestado = estadoenemy.idle;
-           
+
         }
     }
 
-   
+    void OnDrawGizmos()
+    {
+        //Distancia de disparo
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, distanciadedisp);
 
+        //Distancia de perdido
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, distanciadealeja);
+
+    }
+    
+    
 }

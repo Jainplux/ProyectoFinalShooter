@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd4bfa43f3499a4aaa98bb4a799e9c7, type: 3}
+  m_Name: Gundb
+  m_EditorClassIdentifier: 
+  gun:
+  - Gunname: Gun1
+    Damage: 1
+    material: {fileID: 2100000, guid: 33298aa90c808f84d8f0b3645b70886d, type: 2}
+    Maxammo: 200
+    partic: {fileID: 1355399159335122, guid: 99014d62531eb8a46b3b260b38beda5e, type: 2}
+    actualammo: 128
+  - Gunname: Gun2
+    Damage: 2
+    material: {fileID: 2100000, guid: eb15e573bb61e2b408763b73db24b1e0, type: 2}
+    Maxammo: 150
+    partic: {fileID: 1355399159335122, guid: 97cf228289bf15849808d2b57c1cfa86, type: 2}
+    actualammo: 150

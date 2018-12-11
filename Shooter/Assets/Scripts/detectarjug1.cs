@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class detectarjug1 : detectarjug {
-  
-    UnityEngine.AI.NavMeshAgent enemy;
-    
+
+
     // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void OnDrawGizmos()
+    {
+        //rango de vision 2
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, visionRadius1);
+        //Distancia de disparo
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, distanciadedisp);
+
+    }
+
 }

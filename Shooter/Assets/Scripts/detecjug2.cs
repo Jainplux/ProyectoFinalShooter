@@ -4,66 +4,74 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class detecjug2 : detectarjug {
-    UnityEngine.AI.NavMeshAgent enemy;
     // Use this for initialization
-    public float visionRadius2;
-    public float visionRadius1;
-    public GameObject bala;
-    bool disparo=false;
-    public Slider vida;//vida del jugador
-    public override void  Start () {
-        targetP = waypoints[0].position;
-        enemy = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        vida.value = 100;
-        InvokeRepeating("disparando", 2, 1);
+    public Transform Tesoro;
+    public float disttesoro;
 
+  
+    protected void protegertesoro()
+    {
+        if (!isdisparando)
+        {
+            isdisparando = true;
+            StartCoroutine(disparando());
+        }
     }
-
 
     // Update is called once per frame
     public override void Update () {
-        if (Vector3.Distance(transform.position, targetP) < limitR)
+        
+        switch (actualestado)
         {
-            changet();
+            case estadoenemy.atacando:
+                protegertesoro();
+                break;
+            case estadoenemy.idle:
+               // move();
+                break;
+            case estadoenemy.dectectojug:
+                atacar();
+                break;
         }
-        move();
         float dist = Vector3.Distance(player.position, transform.position);
-        float dist2 = Vector3.Distance(player.position, transform.position);
+        float disttes = Vector3.Distance(player.position, Tesoro.position);
+       // float dist2 = Vector3.Distance(player.position, transform.position);
         //si la distancia de vision es menos al radio amariilo se acerca
-        if (dist < visionRadius2)
+        if (dist < visionRadius1 && actualestado != estadoenemy.atacando)
         {
-            enemy.destination = player.position;
-            disparo = true;
-           // Instantiate(bala, player.position, transform.rotation);
+            actualestado = estadoenemy.dectectojug;
+            detectojugfuc();
+
         }
+        else if (disttes < disttesoro)
+        {
+            actualestado = estadoenemy.atacando;
+            agent.destination = Tesoro.position;
+        }else
+        {
+            isdisparando = false;
+            actualestado = estadoenemy.idle;
+            agent.destination = agent.transform.position;
+        }
+        
         //si la distancia de vision es menos al radio azul regresa a proteger la moneda
-        if (dist2< visionRadius1)
-        {
-            enemy.destination = this.transform.position;
-        }
+       
         transform.LookAt(player);
 
         }
 
-    void disparando()
-    {
-        if (disparo == true)
-        {
-          Instantiate(bala, gameObject.transform.position, transform.rotation);
-        }
-
-    }
 
     void OnDrawGizmos()
     {
         //rango de vision 2
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, visionRadius2);
-
-
-        //rango de vision 1
-        Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, visionRadius1);
+        //Distancia de disparo
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, distanciadedisp);
+        //Distancia de tesoro
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(Tesoro.position, disttesoro);
 
     }
 }
