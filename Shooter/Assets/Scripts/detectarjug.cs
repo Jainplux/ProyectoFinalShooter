@@ -82,4 +82,3 @@ public class detectarjug : MonoBehaviour
         
     }
 }
-S
